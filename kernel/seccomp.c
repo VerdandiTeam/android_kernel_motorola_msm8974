@@ -387,8 +387,8 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
 	 * behavior of privileged children.
 	 */
 	if (!task_no_new_privs(current) &&
-			security_capable_noaudit(current_cred(),
-				current_user_ns(), CAP_SYS_ADMIN) != 0)
+	    security_capable_noaudit(current_cred(), current_user_ns(),
+				     CAP_SYS_ADMIN) != 0)
 		return ERR_PTR(-EACCES);
 
 	/* Allocate a new seccomp_filter */
@@ -562,14 +562,7 @@ static int mode1_syscalls_32[] = {
 };
 #endif
 
-void __secure_computing(int this_syscall)
-{
-	/* Filter calls should never use this function. */
-	BUG_ON(current->seccomp.mode == SECCOMP_MODE_FILTER);
-	__secure_computing_int(this_syscall);
-}
-
-int __secure_computing_int(int this_syscall)
+int __secure_computing(int this_syscall)
 {
 	int exit_sig = 0;
 	int *syscall;

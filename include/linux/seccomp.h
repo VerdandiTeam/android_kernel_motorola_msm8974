@@ -77,16 +77,11 @@ struct seccomp {
 	struct seccomp_filter *filter;
 };
 
-/*
- * Direct callers to __secure_computing should be updated as
- * CONFIG_HAVE_ARCH_SECCOMP_FILTER propagates.
- */
-extern void __secure_computing(int) __deprecated;
-extern int __secure_computing_int(int);
+extern int __secure_computing(int);
 static inline int secure_computing(int this_syscall)
 {
 	if (unlikely(test_thread_flag(TIF_SECCOMP)))
-		return  __secure_computing_int(this_syscall);
+		return  __secure_computing(this_syscall);
 	return 0;
 }
 
